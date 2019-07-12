@@ -11,11 +11,7 @@ var liuhai = (window.innerHeight/window.innerWidth)>1.9?90:0;
 //p('wh');
 //p(wh);
 function p() {
-	//if(window.navigator.platform == 'devtools'){
-        for (var k in arguments){
-            console.log(arguments[k]);
-        }
-	//}
+    console.log(arguments)
 }
 function randArr(arr, num) {
     if (undefined === num) {
@@ -39,6 +35,9 @@ function randArr(arr, num) {
 
     }
     return return_array;
+}
+function un(s){
+    return null === s || undefined === s || s == '';
 }
 function gAds(f, t) {
     if (undefined === G.aaList) {
@@ -650,4 +649,4 @@ Base64.prototype._utf8_decode = function (utftext) {
 
 var base64 = new Base64();
 
-export { p, rand, post, now, ptj, sc, gc, jgT, inQ, inDom, l, date, now_m, ww, wh, bli, liuhai, vFloat, alert, alt, loading, bli2, mGS, data_r, inarray, base64, f_arr, f_w, cp, linePos, linePosX, ruler, pwh, pww, syT, file, mcGif, gAds,randArr};
+export { p, rand, post, now, un, ptj, sc, gc, jgT, inQ, inDom, l, date, now_m, ww, wh, bli, liuhai, vFloat, alert, alt, loading, bli2, mGS, data_r, inarray, base64, f_arr, f_w, cp, linePos, linePosX, ruler, pwh, pww, syT, file, mcGif, gAds,randArr};

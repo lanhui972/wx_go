@@ -156,6 +156,7 @@ export default class dom {
             return this.attr.x;
         } else {
             this.attr.x = n;
+            this.attr.px = n;
         }
     }
     y(n) {
