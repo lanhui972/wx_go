@@ -3,7 +3,7 @@ import Xg from './ex/xg'
 import Dom from './inc/dom';
 import Music from './inc/music'
 import { md5 } from './inc/md5'
-import { p, rand, now, post, inQ, ww, wh, ptj, pww, inarray, l, bli, now_m, liuhai, gc, sc, alt, alert, mGS } from './inc/func'
+import { p, rand, now, post, inQ, randArr, ww, wh, ptj, pww, inarray, l, bli, now_m, liuhai, gc, sc, alt, alert, mGS } from './inc/func'
 import Touch from './inc/touch'
 import Index from './page/index'
 import Play from './page/play'
@@ -148,7 +148,7 @@ export default class Main {
         }
     }
 
-    goPage(s, gk) {
+    goPage(s) {
         /*for (var k in G.d['参数']['功能']){
             let o = G.d['参数']['功能'][k];
             p(o.name)
@@ -161,7 +161,7 @@ export default class Main {
 
         let that = this;
         this.dom = {};
-        imgLoad = {};
+        //imgLoad = {};
         this.clickMove = false;
         this.touch = new Touch(this);
 
@@ -178,7 +178,7 @@ export default class Main {
         switch (s) {
             case 'play':
                 this.play = new Play();
-                this.play.start(gk);
+                this.play.start();
                 break;
             default:
                 this.currPage = 'index';
@@ -208,18 +208,49 @@ export default class Main {
             return G.dom[k];
         }
     }
-    goAPPID(id, ph, app_id, tjid) {
+    goAPPID(id, ph, app_id) {
         let that = this;
         if (id == '') {
             return;
         }
+
+        p(G.aaList.sy)
+
+        let ckok = false;
+        let myapp = [];
+        for (let x in G.aaList.sy) {
+            if (G.aaList.sy[x]['appid'] == id) {
+                if (G.aaList.sy[x]['zj'] == 1) {
+                    p('my app.');
+                    ckok = true;
+                }
+            }
+            if (G.aaList.sy[x]['zj'] == 1) {
+                myapp.push(G.aaList.sy[x]);
+            }
+        }
+
+        let go_ad = gc('kk') == '' ? {} : gc('kk');
+        p(go_ad);
+        if (!ckok) {
+            if (myapp.length > 0) {
+                let my = randArr(myapp, 1);
+
+                if (undefined !== go_ad[id] && go_ad[id] >= 2) {  //商业次数超过
+                    p('商业次数超过');
+                    id = my[0].appid, ph = my[0].path, app_id = my[0].id;
+                }
+            }
+        }
+
         if (wx.navigateToMiniProgram) {
             wx.navigateToMiniProgram({
                 appId: id,
                 path: ph,
                 success: function () {
+                    //p("底部发现更多游戏成功跳转到appId为 wxa0526df46dfc97a1 的小程序");
+                    p('进入了小游戏');
                     if (undefined !== app_id) {
-
                         let us_id = 0;
                         if (undefined !== that.us && undefined !== that.us.z_uid) {
                             us_id = that.us.z_uid;
@@ -230,11 +261,13 @@ export default class Main {
                         let d = new Date;
                         let timestamp = d.getTime();
                         let signData = md5('appid:' + G.appid + 'from_id:' + G.appid + 'timestamp:' + timestamp + 'to_id:' + app_id + 'user_id:' + us_id);
-                        post({ url: G.tjUrl, appid: G.appid, user_id: us_id, from_id: G.appid, to_id: app_id, sign: signData, timestamp: timestamp }, function (d) {
+                        p(signData);
+
+                        go_ad[id] = (undefined === go_ad[id] ? 1 : go_ad[id] + 1);
+                        sc('kk', go_ad);
+
+                        post({ url: "https://ad.ali-yun.wang/api/collect/index", appid: G.appid, user_id: us_id, from_id: G.appid, to_id: app_id, sign: signData, timestamp: timestamp }, function (d) {
                         })
-                        if (undefined !== tjid && tjid > 0) {
-                            ptj(tjid);
-                        }
                     }
                     if (G.gameBox && id == G.more_appid) { G.M.del(2); G.ad(); }
                 },
@@ -318,19 +351,18 @@ export default class Main {
                 this.bannerAd.style.top = this.wh - this.adHeight - 10;
             }
         }
-
-
         if (undefined !== G.aaList && G.aaList.conf.syad == 1) {
+
             if (undefined === G.dom.zcMore) {
-                G.dom.zcMore = new Btn('img', 'src:' + I + 'zc/1.png;zindex:15;x:0;y:480;width:79;height:97;',
-                    { bli: 750, liuhai: false, click: function () { C.ceBian(); G.ad(); } }  //更多游戏
+                G.dom.zcMore = new Btn('img', 'zindex:5;src:' + I + 'zc/1.png;zindex:15;x:0;y:480;width:79;height:97;',
+                    { bli: 750,  click: function () { C.ceBian(); G.ad(); } }  //更多游戏
                 );
                 //G.C.moregame();
                 G.iniDoms();
 
-                if (this.currPage == 'play') {
-                    C.moreX = 997;
-                }
+                //if (this.currPage == 'play') {
+                    //C.moreX = 997;
+                //}
             }
             C.moreGameS();
             if (C.moreX > 0) {
@@ -393,6 +425,7 @@ export default class Main {
     }
     touchEvent() {
         this.touch.touchEvent(1);
+        window.cancelAnimationFrame(this.aniId);
         this.aniId = window.requestAnimationFrame(this.bindLoop, canvas);
     }
 
@@ -418,6 +451,7 @@ export default class Main {
     }
     oldGetUser() {
         let that = this;
+        return;
         //wx.showLoading({ title: '更新中...' })
         wx.login({
             success: function (t) {
@@ -468,7 +502,7 @@ export default class Main {
     }
 
     buildStartBtn() {   //授权登录按扭
-
+        return;
         if (!this.bStartBtn && this.currPage != 'index') {
             return;
         }
@@ -502,7 +536,7 @@ export default class Main {
             wx.showLoading({ title: '加载中' });
             if (that.us.data != undefined && that.config.uid > 0) {
                 wx.hideLoading();
-                that.start.hide();
+                //that.start.hide();
                 that.loading = false;
                 //that.music.con(that.syin);
                 that.goPage('play');
@@ -554,7 +588,7 @@ export default class Main {
                     }
                 }
                 if (undefined !== d.us_id) {
-                    that.updateUS(d)
+                    //that.updateUS(d)
                     that.goPage('play');
                     //that.fxUsData();
                 }
@@ -615,7 +649,7 @@ export default class Main {
                     }
 
                     if (null !== a.us && undefined !== a.us) {
-                        that.updateUS(a.us);
+                        //that.updateUS(a.us);
                     } else {
                         //that.oldGetUser();
                     }

@@ -10,8 +10,8 @@ var pwh = window.innerHeight;
 var liuhai = (window.innerHeight/window.innerWidth)>1.9?90:0;
 //p('wh');
 //p(wh);
-function p() {
-    console.log(arguments)
+function p(s) {
+    console.log(s)
 }
 function randArr(arr, num) {
     if (undefined === num) {
