@@ -151,6 +151,21 @@ export default class dom {
             this.attr.height = n;
         }
     }
+   cx(n) {
+       if (undefined === n) {
+           return this.x() + this.width() / 2;
+       } else {
+           this.x(n - this.width() / 2);
+       }
+    }
+    cy(n) {
+        if (undefined === n) {
+            return this.y() + this.height() / 2;
+        } else {
+            this.y(n - this.height() / 2);
+        }        
+    }
+
     x(n) {
         if (undefined === n) {
             return this.attr.x;
@@ -164,6 +179,7 @@ export default class dom {
             return this.attr.y;
         } else {
             this.attr.y = n;
+            this.attr.py = n;
         }
     }
     sAttr(k, n) {

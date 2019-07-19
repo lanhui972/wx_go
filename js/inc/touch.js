@@ -209,7 +209,7 @@ export default class Touch {
                     //G.music.ck(G.syin);		//点击声音
                 //}
                 if (dom1.attr.mousemove && dom1.kmove){
-                    //p('moveDom start ' + G.doms[i]);                        
+                    //p('moveDom start ' + dom1);                        
                     this.moveDom = dom1;
                     this.moveDom.moveAU = false;
                     this.moveOxy = [dom1.mx,dom1.my];
