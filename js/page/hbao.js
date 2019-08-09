@@ -2,7 +2,7 @@
 import Dom from '../inc/dom'
 import Xg from '../ex/xg'
 import Btn from '../ex/btn'
-import Dongtu from '../ex/dongtu2'
+import Dongtu from '../ex/dongtu'
 import Opacity from '../ex/opacity'
 import Font from '../ex/font'
 import { p, rand, loading, liuhai, now_m, post, alt, now, mGS, f_w, f_arr, sc, gc, date, syT } from '../inc/func'
